@@ -3,7 +3,7 @@
   <br>Mea<br>
 </h1>
 <h4 align="center">泛用型形式化编程语言</h4>
-<h5 align="center">*The icon 🍥 comes from <a href="https://moegirl.org.cn/神乐Mea">a virtual character</h5>
+<h5 align="center">*The icon 🍥 comes from <a href="https://moegirl.org.cn/神乐Mea">a virtual character</a></h5>
 
 # 引
 
@@ -19,7 +19,7 @@
 
 # 基本工作流
 
-上文中曾提到过,编程语言描述如何组织与处理数据.这种描述通常是逐行的,就像要求他人去做某事时,我们会逐句写下命令,编程语言中的描述也是一样.
+在上文中提到过,编程语言描述如何组织与处理数据.这种描述通常是逐行的,就像要求他人去做某事时,我们会逐句写下命令,编程语言中的描述也是一样.
 
 为了避免由于内容过长以至于无法在形式上的一行内呈现,我们曾规定不以换行来区分各行而是在每行结尾处添加`;`,但后来因为这种情况较为少见,因此便改为以形式上的换行区分各行,如有需要可以在形式行结尾处添加`\`以表示该行与下一行事实上表示同一行.
 
@@ -173,4 +173,55 @@ c:num=suuuuuum(b)
 | !a       | a===b           | a!===b         | a%b            | a^b          | a&&b            | a\|\|b        | a^^b           | a<<b           | a>>b             |
 | not(a)   | isSame(a,b)     | isNotSame(a,b) | remainder(a,b) | toPower(a,b) | and(a,b)        | or(a,b)       | xor(a,b)       | shiftLeft(a,b) | shiftRight(a,b)  |
 
-事实上,上文中提到过的通过`name:type=value`来替代`new(name,type,value)`的做法也属于此列.`if`等逻辑判断虽也能被lambda运算符替代,但其并不属于方法当中.
+事实上,上文中提到过的通过`name:type=value`来替代`new(name,type,value)`的做法也属于此列.`if`标识符虽也能被条件运算符替代,但其并不属于方法当中.
+
+## 逻辑判断
+
+在上文中提到过,过程中的行为会因不同的环境而做出一些改变.一般来说,对当前情况的判断是对某些决定程序工作方式的条件的判断,可以用`if condition then`来表示,并且可以通过`()`与`{}`进行进一步划分:
+
+```kotlin
+a:num=0
+if a==0 then a=a+1
+if(a==1){
+	a=a-1
+}
+```
+
+进一步地,我们可以通过`else if condition`对多个条件进行判断,并且通过`else`设置不符合任一条件时的行为:
+
+```kotlin
+a:num=0
+if(a==0){
+	a=1
+}else if(a==1){
+	a=0
+}else{
+	a=-1
+}
+```
+
+以上程序会导致`a`被赋值为`1`,因为在所有相连的`if`,`else if`与`else`中,只要一次判断成功便不会再继续判断.
+
+特别地,`if(){}else{}`可以被写为条件表达式:
+
+```kotlin
+a:num=0
+b:num=(a==0:1?-1)
+```
+
+条件表达式也可以写作`a if condition else b`的形式:
+
+```kotlin
+b:num=1 if a==0 else -1
+```
+
+通过`until`标识符,可以使过程不断进行直至满足条件为止:
+
+```kotlin
+a:num=0
+if(a==0){
+	a=a+1
+}until(a==5)
+```
+
+`until`不一定要在`if`之后使用.事实上,`until`在具体实现时声明了一个不具有方法名的方法,并且在每次执行完后判断条件以此决定是否要再引用自己.这个方法的参数为过程中所使用到的所有已声明的对象,并且这些参数被分配的地址与原本的已声明的对象的地址相同,换句话说,对这些参数的修改等价于对原本对象的修改.
