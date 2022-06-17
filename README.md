@@ -56,7 +56,7 @@ if(isEqual a,1) new b,string,"a is one" else new b,string,"a isn't one"
 
 对象具有属性与类型,对象具有何种属性由其类型决定.
 
-基本类型共有三种:数值,字符串与逻辑类型,分别对应`num`,`string`与`bool`.其中`string`类型的值应在两端添加`""`,`bool`类型的对象只具有`True`与`False`两种值,用以表示逻辑判断中的真假.更多关于类型的内容会在类型一节中介绍.
+基本类型共有三种:数值,字符串与逻辑类型,分别对应`num`,`string`与`bool`.其中`string`类型的值应在两端添加`""`,`bool`类型的对象只具有`True`与`False`两种值,用以表示逻辑判断中的真假.更多关于类型的内容会在[类型](#类型)一节中介绍.
 
 除上文中通过`new()`来声明对象以外,按照惯例,还可以直接写作`object:type=value`的形式:
 
@@ -115,6 +115,8 @@ a[0][1]=1
 
 以上便声明了一个3*5的二维列表,并使(0,1)的位置上为一个值为`1`的对象.
 
+当对象无需再继续使用时,可以通过`delete(object)`消除.
+
 ## 方法
 
 在上文中提到过,我们通过引用现有的过程降低程序复杂度,这些引用的过程被称为方法.同一方法在不同的环境下可能应以不同的方式工作,我们在此借用了数学当中参数的概念以实现这一点.
@@ -167,10 +169,10 @@ c:num=suuuuuum(b)
 
 有一些运算符用于替代常用的方法:
 
-| a+b      | a-b             | a*b            | a/b            | a==b         | a!=b            | a>b           | a>=b           | a<b            | a<=b             |
+| **a+b**  | **a-b**         | **a*b**        | **a/b**        | **a==b**     | **a!=b**        | a>b           | **a>=b**       | **a<b**        | **a<=b**         |
 | -------- | --------------- | -------------- | -------------- | ------------ | --------------- | ------------- | -------------- | -------------- | ---------------- |
 | sum(a,b) | difference(a,b) | multiple(a,b)  | divide(a,b)    | isEqual(a,b) | isNotEuqal(a,b) | isBigger(a,b) | isNotSmaller() | isSmaller()    | isNotBigger(a,b) |
-| !a       | a===b           | a!===b         | a%b            | a^b          | a&&b            | a\|\|b        | a^^b           | a<<b           | a>>b             |
+| **!a**   | **a===b**       | **a!===b**     | **a%b**        | **a^b**      | **a&&b**        | **a\|\|b**    | **a^^b**       | **a<<b**       | **a>>b**         |
 | not(a)   | isSame(a,b)     | isNotSame(a,b) | remainder(a,b) | toPower(a,b) | and(a,b)        | or(a,b)       | xor(a,b)       | shiftLeft(a,b) | shiftRight(a,b)  |
 
 事实上,上文中提到过的通过`name:type=value`来替代`new(name,type,value)`的做法也属于此列.`if`标识符虽也能被条件运算符替代,但其并不属于方法当中.
@@ -179,7 +181,7 @@ c:num=suuuuuum(b)
 
 在上文中提到过,过程中的行为会因不同的环境而做出一些改变.一般来说,对当前情况的判断是对某些决定程序工作方式的条件的判断,可以用`if condition then`来表示,并且可以通过`()`与`{}`进行进一步划分:
 
-```kotlin
+```shell
 a:num=0
 if a==0 then a=a+1
 if(a==1){
@@ -202,9 +204,9 @@ if(a==0){
 
 以上程序会导致`a`被赋值为`1`,因为在所有相连的`if`,`else if`与`else`中,只要一次判断成功便不会再继续判断.
 
-特别地,`if(){}else{}`可以被写为条件表达式:
+特别地,`if(condition){}else{}`可以被写为条件表达式:
 
-```kotlin
+```Kotlin
 a:num=0
 b:num=(a==0:1?-1)
 ```
@@ -217,7 +219,7 @@ b:num=1 if a==0 else -1
 
 通过`until`标识符,可以使过程不断进行直至满足条件为止:
 
-```kotlin
+```ruby
 a:num=0
 if(a==0){
 	a=a+1
@@ -225,3 +227,63 @@ if(a==0){
 ```
 
 `until`不一定要在`if`之后使用.事实上,`until`在具体实现时声明了一个不具有方法名的方法,并且在每次执行完后判断条件以此决定是否要再引用自己.这个方法的参数为过程中所使用到的所有已声明的对象,并且这些参数被分配的地址与原本的已声明的对象的地址相同,换句话说,对这些参数的修改等价于对原本对象的修改.
+
+在`until`的条件未被满足之前,使用`break()`可以提前退出.当有多层`until`嵌套存在时,使用`break(n)`以退出`n`层`until`:
+
+```ruby
+a:num=0
+until(a==5){
+	a=a+2
+  until(a==3){
+    break(2)
+  	a=a+1
+  }
+}
+```
+
+`until`在第二层开始的第一行中被退出,`a`最终被赋值为`2`.通过使用`continue`标识符,可以跳过过程中剩下的内容而直接进行下一次判断.
+
+## 类型
+
+在上文中提到过,我们需要以不同的方式组织输入与在过程中产生的值.这些值被作为对象的属性包含于对象内,因此,不同的组织方法主要取决于不同的对象类型.
+
+有三种用于组织大部分值的基础类型:`num`,`string`与`bool`.事实上,`num`与`bool`都是基于`string`实现的,我们在[对象](#对象)一节中已经介绍过这一点.进一步地,也可以通过已经存在的类型构建出新的类型:
+
+```typescript
+type neko(color:string,sleepy:bool){
+	@customized color:string
+  @customized sleepy:bool=false
+  @generical amount:num=0
+  afterNew{
+  	amount=amount+1
+  }
+  afterDel{
+  	amount=amount-1
+  }
+}
+```
+
+以上构建了一个`neko`类型.这一类型的对象拥有`color`与`sleepy`两个属性.如果声明一个`neko`类型对象时没有指明`sleepy`属性则默认认为为`false`.
+
+`@customized`决定了其后是一个属性,每一个该类型对象被声明时都会声明一个新的作为该对象的属性.
+
+`@generical`则决定其后是一个该类型所需的独立的对象,只要该类型存在无论是否声明该类型的对象其都会被声明.
+
+`afterNew`与`afterDel`分别表示当一该类型对象被声明或消除时的行为,在本例中,每有一个`neko`对象被声明`amount`就会在原先的基础上加`1`,反之亦然.
+
+其余的类似标识符还有`beforeSet(object)`,`afterSet(object)`,`beforeGet(object)`,`afterSet(object)`,`beforeNew`与`beforeDel`.其中前四者是针对某一属性被设定或获取时的行为,后两者则与上文中二者相反.
+
+在这些过程中,可以通过`this`来表示具体被声明的该类型的对象.例如,上文中为`sleepy`设置默认值的操作也可以这样实现:
+
+```typescript
+type neko(color:string,sleepy:bool){
+	@customized color:string
+  @customized sleepy:bool
+  @generical amount:num=0
+  afterNew{
+  	amount=amount+1
+    this.sleepy=false if this.sleepy==null else this.sleepy
+  }
+```
+
+值得一提的是,没有提供默认值的属性如果也没有被在声明时指定则值为`null`.
